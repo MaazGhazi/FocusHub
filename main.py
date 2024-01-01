@@ -1,31 +1,50 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
 
+# Define brain wave categories
+brain_wave_categories = {
+    'Delta': ["Delta_TP9", "Delta_AF7", "Delta_AF8", "Delta_TP10"],
+    'Theta': ["Theta_TP9", "Theta_AF7", "Theta_AF8", "Theta_TP10"],
+    'Alpha': ["Alpha_TP9", "Alpha_AF7", "Alpha_AF8", "Alpha_TP10"],
+    'Beta': ["Beta_TP9", "Beta_AF7", "Beta_AF8", "Beta_TP10"],
+    'Gamma': ["Gamma_TP9", "Gamma_AF7", "Gamma_AF8", "Gamma_TP10"],
+}
 
-labels = [
-    "Delta_TP9", "Delta_AF7", "Delta_AF8", "Delta_TP10",
-    "Theta_TP9", "Theta_AF7", "Theta_AF8", "Theta_TP10",
-    "Alpha_TP9", "Alpha_AF7", "Alpha_AF8", "Alpha_TP10",
-    "Beta_TP9", "Beta_AF7", "Beta_AF8", "Beta_TP10",
-    "Gamma_TP9", "Gamma_AF7", "Gamma_AF8", "Gamma_TP10",
-    "RAW_TP9", "RAW_AF7", "RAW_AF8", "RAW_TP10","HeadBandOn",
-    "HSI_TP9", "HSI_AF7", "HSI_AF8", "HSI_TP10",
-    "Battery", "Elements"
-]
-
-df = pd.read_csv('concentration_2021-07-06--17-35-50_1168978808786958657.csv')
-
+df = pd.read_csv('combined_dataset.csv')
 df.head()
 
-for label in labels:
-    if label == "RAW_TP9":
-        break  # Stop iterating when reaching "RAW_TP9"
+for category, category_labels in brain_wave_categories.items():
+    plt.figure(figsize=(12, 6))
     
-    if label in df.columns:
-        plt.figure()
-        df[label].plot(kind='hist', bins=50, color='blue', edgecolor='black')
-        plt.title(label + " Histogram")
-        plt.xlabel("Value")
-        plt.ylabel("Frequency")
-        plt.show()
+    for label in category_labels:
+        plt.hist(df[df["Result"]==1][label], color='blue', alpha=0.5, density=True, label="Meditative")
+        plt.hist(df[df["Result"]==0][label], color='red', alpha=0.5, density=True, label="Neutral")
+        plt.hist(df[df["Result"]==2][label], color='green', alpha=0.5, density=True, label="Concentration")
+    
+    plt.title(f"{category} Brain Wave Category Histograms")
+    plt.ylabel('Probability')
+    plt.xlabel('Value')
+    plt.legend()
+    plt.show()
+
+train, valid, test = np.split(df.sample(frac=1), [int(.6*len(df)), int(.8*len(df))])
+
+def scale_dataset(data_frame, oversample = False):
+    X = data_frame[data_frame.columns[:-1]].values
+    y = data_frame[data_frame.columns[-1]].values
+    scaler = StandardScaler()
+    X = scaler.fit_transform(X)
+
+    if oversample:
+      ros = RandomOverSampler()
+      X, y = ros.fit_resample(X,y)
+      
+    data = np.hstack((X, np.reshape(y, (-1, 1))))
+
+    return data, X, y
+train, X_train, y_train = scale_dataset(train, oversample= True)
+
+print(len(train[train["Result"]==0]))
+print(len(train[train["Result"]==1]))
+print(len(train[train["Result"]==2]))
