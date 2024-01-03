@@ -1,1 +1,1 @@
-import mailbox as mb
+import mailbox 
