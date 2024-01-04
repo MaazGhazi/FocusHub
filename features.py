@@ -11,7 +11,7 @@ def create_segments(data, window_size):
             segments.append(segment)
     return segments
 
-# Function to calculate statistical features for each EEG frequency band
+# Function to calculate statistical features for each EEG frequency bands
 def calculate_statistical_features(segment):
     features = {}
     for frequency_band in ['Delta', 'Theta', 'Alpha', 'Beta', 'Gamma']:
