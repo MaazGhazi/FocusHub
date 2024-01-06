@@ -1,5 +1,5 @@
 import pandas as pd
-import numpy as nps
+import numpy as np
 from sklearn.linear_model import LinearRegression
 
 # Function to create segments from data
