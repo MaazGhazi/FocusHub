@@ -18,6 +18,7 @@ rel_waves = [-1,-1,-1,-1,-1]
 
 #Audio Variables
 alpha_sound_threshold = 0.6
+sound_file = "bell.mp3"
 
 #Plot Array
 plot_val_count = 200
