@@ -39,7 +39,7 @@ def hsi_handler(address: str,*args):
         if args[2]!=1:
             hsi_string_new += "Right Forehead. "
         if args[3]!=1:
-            hsi_string_new += "Right Ear"        
+            hsi_string_new += "Right Ears"        
     if hsi_string!=hsi_string_new:
         hsi_string = hsi_string_new
         print(hsi_string)    
